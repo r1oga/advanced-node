@@ -8,8 +8,15 @@ client.get = util.promisify(client.get)
 
 const exec = mongoose.Query.prototype.exec
 
-// no arrow functon
+mongoose.Query.prototype.cache = function () {
+  this.useCache = true
+  return this // make it chainable
+}
+
+// no arrow function
 mongoose.Query.prototype.exec = async function () {
+  if (!this.useCache) return exec.apply(this, arguments)
+
   const key = JSON.stringify(
     Object.assign({}, this.getQuery(), {
       collection: this.mongooseCollection.name
