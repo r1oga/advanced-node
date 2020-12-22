@@ -26,7 +26,7 @@ mongoose.Query.prototype.exec = async function () {
   // Any value for key in redis?
   const cacheValue = await client.get(key)
 
-  // yes, return it
+  // yes >> return it
   if (cacheValue) {
     const doc = JSON.parse(cacheValue)
 
@@ -35,8 +35,8 @@ mongoose.Query.prototype.exec = async function () {
       : new this.model(doc)
   }
 
-  // no, exec query and store result in redis
+  // no >> exec query and store result in redis
   const result = await exec.apply(this, arguments)
-  client.set(key, JSON.stringify(result))
+  client.set(key, JSON.stringify(result), 'EX', 10)
   return result
 }
