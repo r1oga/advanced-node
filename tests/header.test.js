@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer')
+const { sessionFactory, userFactory } = require('./factories')
+
 describe('Header', () => {
   let browser, pages, page
 
@@ -26,20 +28,9 @@ describe('Header', () => {
   })
 
   it.only('shows logout button when signed in', async () => {
-    const id = '5fe0cfeafad0c82c079c032c'
-
-    const Buffer = require('safe-buffer').Buffer
-    const sessionObject = { passport: { user: id } }
-    const sessionString = Buffer.from(JSON.stringify(sessionObject)).toString(
-      'base64'
-    )
-
-    const Keygrip = require('keygrip')
-    const keys = require('../config/keys')
-    const keygrip = new Keygrip([keys.cookieKey])
-    const sig = keygrip.sign(`session=${sessionString}`)
-
-    await page.setCookie({ name: 'session', value: sessionString })
+    const user = await userFactory()
+    const { session, sig } = sessionFactory(user)
+    await page.setCookie({ name: 'session', value: session })
     await page.setCookie({ name: 'session.sig', value: sig })
 
     // refresh page to simulate logging in
