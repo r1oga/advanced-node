@@ -1,4 +1,5 @@
 require('dotenv').config()
+jest.setTimeout(15000)
 const mongoose = require('mongoose')
 
 require('../models/User')
