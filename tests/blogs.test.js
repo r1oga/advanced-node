@@ -1,3 +1,4 @@
+Number.prototype._called = {}
 const { Page } = require('./helpers')
 
 describe('Blogs', () => {
@@ -40,7 +41,7 @@ describe('Blogs', () => {
 
       it('submitting adds blog to index page', async () => {
         await page.click('button.green')
-        await page.waitFor('.card')
+        await page.waitForSelector('.card')
         // new user is created, can pull first card
         const title = await page.getContentsBySelector('.card-title')
         const content = await page.getContentsBySelector('p')
@@ -62,5 +63,22 @@ describe('Blogs', () => {
         }
       })
     })
+  })
+
+  describe('When not logged in', () => {
+    it('cannot create blog posts', async () => {
+      const result = await page.evaluate(() =>
+        fetch('/api/blogs', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: 'Test title', content: 'Test content' })
+        }).then(res => res.json())
+      )
+
+      expect(result).toEqual({ error: 'You must log in!' })
+    })
+
+    // it('', async() => {})
   })
 })

@@ -27,7 +27,7 @@ class Page {
 
     // refresh page to simulate logging in and redirect to /blogs
     await this.page.goto('localhost:3000/blogs')
-    await this.page.waitFor('a[href="/auth/logout"]')
+    await this.page.waitForSelector('a[href="/auth/logout"]')
   }
 
   async getContentsBySelector(selector) {

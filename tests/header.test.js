@@ -1,3 +1,4 @@
+Number.prototype._called = {}
 const { Page } = require('./helpers')
 
 describe('Header', () => {
