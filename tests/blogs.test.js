@@ -1,6 +1,6 @@
 const { Page } = require('./helpers')
 
-describe('Blogs', async () => {
+describe('Blogs', () => {
   let page
   beforeEach(async () => {
     page = await Page.build()
@@ -10,7 +10,7 @@ describe('Blogs', async () => {
     await page.close()
   })
 
-  describe('When logged in', async () => {
+  describe('When logged in', () => {
     beforeEach(async () => {
       await page.login()
       await page.click('a[href="/blogs/new"]')
@@ -26,21 +26,41 @@ describe('Blogs', async () => {
       expect(contentInputLabel).toEqual('Content')
     })
 
-    // describe('and using valid form inputs', async () => {
-    //   it('the forms shows an error message', async () => {})
-    // })
+    describe('and using valid form inputs', () => {
+      beforeEach(async () => {
+        await page.type('.title input', 'Test title')
+        await page.type('.content input', 'Test content')
+        await page.click('button[type="submit"]')
+      })
 
-    describe('and using invalid form inputs', async () => {
+      it('submitting takes user to review screen', async () => {
+        const text = await page.getContentsBySelector('h5')
+        expect(text).toEqual('Please confirm your entries')
+      })
+
+      it('submitting adds blog to index page', async () => {
+        await page.click('button.green')
+        await page.waitFor('.card')
+        // new user is created, can pull first card
+        const title = await page.getContentsBySelector('.card-title')
+        const content = await page.getContentsBySelector('p')
+
+        expect(title).toEqual('Test title')
+        expect(content).toEqual('Test content')
+      })
+    })
+
+    describe('and using invalid form inputs', () => {
       beforeEach(async () => {
         await page.click('button[type="submit"]')
-
+      })
+      it('the forms shows error messages', async () => {
         const inputs = ['.title .red-text', '.content .red-text']
-        for (let i = 0; i < inputs.length; i++) {
+        for (let i = 0; i < 2; i++) {
           const error = await page.getContentsBySelector(inputs[i])
           expect(error).toEqual('You must provide a value')
         }
       })
-      it('the forms shows an error message', async () => {})
     })
   })
 })
