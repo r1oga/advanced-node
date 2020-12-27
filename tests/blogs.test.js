@@ -79,6 +79,16 @@ describe('Blogs', () => {
       expect(result).toEqual({ error: 'You must log in!' })
     })
 
-    // it('', async() => {})
+    it('cannot get a list of posts', async () => {
+      const result = await page.evaluate(() =>
+        fetch('/api/blogs', {
+          method: 'GET',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' }
+        }).then(res => res.json())
+      )
+
+      expect(result).toEqual({ error: 'You must log in!' })
+    })
   })
 })
