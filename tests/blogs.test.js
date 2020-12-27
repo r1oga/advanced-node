@@ -1,4 +1,5 @@
 Number.prototype._called = {}
+const { response } = require('express')
 const { Page } = require('./helpers')
 
 describe('Blogs', () => {
@@ -66,18 +67,25 @@ describe('Blogs', () => {
   })
 
   describe('When not logged in', () => {
-    it('cannot create blog posts', async () => {
-      const result = await page.post('/api/blogs', {
-        title: 'Title',
-        content: 'Content'
+    const actions = [
+      {
+        method: 'post',
+        path: '/api/blogs',
+        data: {
+          title: 'Title',
+          content: 'Content'
+        }
+      },
+      { method: 'get', path: '/api/blogs' }
+    ]
+
+    const error = { error: 'You must log in!' }
+
+    it('Blog related actions are prohibited', async () => {
+      const responses = await page.exec(actions)
+      responses.forEach(response => {
+        expect(response).toEqual(error)
       })
-
-      expect(result).toEqual({ error: 'You must log in!' })
-    })
-
-    it('cannot get a list of posts', async () => {
-      const result = await page.get('/api/blogs')
-      expect(result).toEqual({ error: 'You must log in!' })
     })
   })
 })

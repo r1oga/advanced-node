@@ -59,6 +59,12 @@ class Page {
       data
     )
   }
+
+  exec(actions) {
+    return Promise.all(
+      actions.map(({ method, path, data }) => this[method](path, data))
+    )
+  }
 }
 
 module.exports = Page
