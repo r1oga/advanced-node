@@ -30,6 +30,10 @@ class Page {
 
     await this.page.waitFor('a[href="/auth/logout"]')
   }
+
+  async getContentsBySelector(selector) {
+    return this.page.$eval(selector, el => el.innerHTML)
+  }
 }
 
 module.exports = Page

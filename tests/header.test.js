@@ -13,7 +13,7 @@ describe('Header', () => {
   })
 
   it('has the correct text', async () => {
-    const text = await page.$eval('a.brand-logo', el => el.innerHTML)
+    const text = await page.getContentsBySelector('a.brand-logo')
     expect(text).toEqual('Blogster')
   })
 
@@ -26,7 +26,7 @@ describe('Header', () => {
 
   it('shows logout button when signed in', async () => {
     await page.login()
-    const text = await page.$eval('a[href="/auth/logout"]', el => el.innerHTML)
+    const text = await page.getContentsBySelector('a[href="/auth/logout"]')
     expect(text).toEqual('Logout')
   })
 })
