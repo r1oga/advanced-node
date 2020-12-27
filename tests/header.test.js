@@ -1,5 +1,4 @@
 const { Page } = require('./helpers')
-const { sessionFactory, userFactory } = require('./factories')
 
 describe('Header', () => {
   let page
@@ -26,15 +25,7 @@ describe('Header', () => {
   })
 
   it('shows logout button when signed in', async () => {
-    const user = await userFactory()
-    const { session, sig } = sessionFactory(user)
-    await page.setCookie({ name: 'session', value: session })
-    await page.setCookie({ name: 'session.sig', value: sig })
-
-    // refresh page to simulate logging in
-    await page.goto('localhost:3000')
-
-    await page.waitFor('a[href="/auth/logout"]')
+    await page.login()
     const text = await page.$eval('a[href="/auth/logout"]', el => el.innerHTML)
     expect(text).toEqual('Logout')
   })
