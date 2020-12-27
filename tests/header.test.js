@@ -1,18 +1,16 @@
-const puppeteer = require('puppeteer')
+const { Page } = require('./helpers')
 const { sessionFactory, userFactory } = require('./factories')
 
 describe('Header', () => {
-  let browser, pages, page
+  let page
 
   beforeEach(async () => {
-    browser = await puppeteer.launch({ headless: false })
-    pages = await browser.pages()
-    page = pages[0]
+    page = await Page.build()
     await page.goto('localhost:3000')
   })
 
-  afterAll(async () => {
-    await browser.close()
+  afterEach(async () => {
+    await page.close()
   })
 
   it('has the correct text', async () => {
@@ -27,7 +25,7 @@ describe('Header', () => {
     expect(url).toContain('oauth2')
   })
 
-  it.only('shows logout button when signed in', async () => {
+  it('shows logout button when signed in', async () => {
     const user = await userFactory()
     const { session, sig } = sessionFactory(user)
     await page.setCookie({ name: 'session', value: session })
