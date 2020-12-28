@@ -1,4 +1,4 @@
-node_modules
 nohup.out
+node__modules
 .env
 .vscode
