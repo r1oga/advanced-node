@@ -3,7 +3,10 @@ const { sessionFactory, userFactory } = require('../factories')
 
 class Page {
   static async build() {
-    const browser = await puppeteer.launch({ headless: false })
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox']
+    })
     const page = (await browser.pages())[0]
 
     const customPage = new Page(page)
@@ -26,7 +29,7 @@ class Page {
     await this.page.setCookie({ name: 'session.sig', value: sig })
 
     // refresh page to simulate logging in and redirect to /blogs
-    await this.page.goto('localhost:3000/blogs')
+    await this.page.goto('http://localhost:3000/blogs')
     await this.page.waitForSelector('a[href="/auth/logout"]')
   }
 

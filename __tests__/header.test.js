@@ -6,7 +6,7 @@ describe('Header', () => {
 
   beforeEach(async () => {
     page = await Page.build()
-    await page.goto('localhost:3000')
+    await page.goto('http://localhost:3000')
   })
 
   afterEach(async () => {
@@ -22,7 +22,7 @@ describe('Header', () => {
     await page.click('a[href="/auth/google"]')
 
     const url = page.url()
-    expect(url).toContain('oauth2')
+    expect(url).toContain('accounts.google.com')
   })
 
   it('shows logout button when signed in', async () => {
